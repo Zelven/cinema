@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>查找</title>
+	<script type="text/javascript" src="./js/jquery.min.js" ></script>
+	<script type="text/javascript" src="./js/bootstrap.min.js" ></script>
+</head>
+<body>
+<!-- 	<form action="#" method="post" enctype="multipart/form-data">
+	<hr>
+				<div id = "choose" class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+								<div class="form-group form-inline">
+									<span>电影名称</span>
+									<input type="text" name="movieName" class="form-control">
+								</div>
+							</div>
+							<div class="form-group form-inline">
+						<label>类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型:</label>
+						<select id="typeSelect" name="typeName" class="form-control">
+							<option value="0">---请选择商品类型---</option>
+							
+							<option value="3D">3D</option>
+							<option value="动画片">动画片</option>
+							<option value="动作片">动作片</option>
+							<option value="爱情片">爱情片</option>
+							<option value="科幻片">科幻片</option>
+							<option value="其他">其他</option>
+						
+						</select><br>
+					</div>
+					<div class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+								<div class="form-group form-inline">
+									<span>主&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;演</span>
+									<input type="text" name="actor" class="form-control">
+								</div>
+							</div>
+							<div class="form-group form-inline">
+							<div class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+								<div class="form-group form-inline">
+									<span>导&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;演</span>
+									<input type="text" name="director" class="form-control">
+								</div>
+							</div>
+					<div class="form-group form-inline">
+						<div class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+								<div class="form-group form-inline">
+									<span>价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格</span>
+									<input type="text" name="price" class="form-control">
+									<span>-</span> <input id="priceEnd" type="text" name="priceEnd"><br>
+								<button type="button" id="search" >
+									<span>查询</span>
+								</button>
+								<a href="show.html">
+								<button type="button" id="add">
+									<span>返回主列表</span>
+								</button>
+								</a>
+								</div>
+							</div>
+							<div class="form-group form-inline">	
+							<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-primary" id="search" onclick ="searchInfo()"><span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查询&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+							</div>
+						</div>
+				列表显示
+						<table id="tb_list" class="table table-striped table-hover table-bordered">
+							<tr id="tid1"></tr>
+							<tbody id="tid"></tbody>
+						</table>		
+					</div>
+				</div>
+				</div>
+			</div>
+			</div>
+			</div>
+			</form> -->
+	<div>
+		<div>
+			<div>
+				<div>查询电影</div>
+				<div>
+					<form action="" onform="return false;">
+					<div id="choose">
+						<div >
+							<div>
+								<span>电影名称:</span> <input id="name" type="text" name="movieName"><br>
+								<label>电影类型:</label>
+									<select id="typeSelect" name="movieType" class="form-control" >
+						
+									<option value="">---请选择商品类型---</option>
+									
+									</select><br>
+								<span>主演:</span> <input id="actor" type="text" name="actor"><br>
+								
+							</div>
+						</div>
+						<div>
+							<div>
+								<span>导演:</span> <input id="director" type="text" name="director"><br>
+								<span>价格区间:</span> <input id="pricePre" type="text" name="pricePre">
+								<span>-</span> <input id="priceEnd" type="text" name="priceEnd"><br>
+								<button type="button" id="search" >
+									<span>查询</span>
+								</button>
+								<a href="index.html">
+								<button type="button" id="add">
+									<span>返回主列表</span>
+								</button>
+								</a>
+							</div>
+						</div>
+
+					</div>
+					</form>
+					<div>
+						<table id="tb_list"  width="700px">
+							<tr id="tid1">
+								
+							</tr>
+							<tbody id="tid"></tbody>
+							
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>			
+			
+		 <script type="text/javascript">
+		
+			$(function(){
+				$.ajax({
+					type:"get",
+					url:"/cinema/showAll.do",
+					dataType:"json",
+					success:function(data){
+						if(data.code == 1){
+							// 清空表格的数据
+							$("#tid").empty();
+							// 找到要遍历的数据
+							var infos = data.info;
+							// 循环遍历
+							$(infos).each(function(){
+								// 组装html格式的字符串
+								var html = "<tr>";
+								html += "	<td>" + this.id + "</td>";
+								html += "	<td>" + this.movieName + "</td>";
+								html += "	<td>" + this.movieType + "</td>";
+								html += "	<td>" + this.actor + "</td>";
+								html += "	<td>" + this.director + "</td>";
+								html += "   <td>" + this.price + "</td>";
+								
+								html += "</tr>";
+								// 根据html格式字符串创建dom对象，将对象添加到对应表格的最后
+								$("#tid").append($(html));
+							})
+						}else{
+							alert(data.info);
+						}
+					},
+					error:function(){
+						
+					}
+				})
+			})
+		</script>
+		<script type="text/javascript">
+		
+	$("#search").click(function(){
+		$.ajax({
+			type:"get",
+			url:"/cinema/query.do"
+			data:$("form").serialize(),
+			dataType:"json",
+			success:function(data) {
+				if(data.code == 1) {
+					$("#choose").empty();
+					$("#tid").empty();
+					var infos = data.info;
+					var html2 = '<td>电影名称</td><td>类型</td><td>主演</td><td>导演</td><td>票价</td>'
+					$("#tid1").append(html2);
+					
+					$(infos).each(function() {
+						var html = "<tr>";
+						html += "<td>" + this.movieName +"</td>"
+						html += "<td>" + this.movieType + "</td>"
+						html += "<td>"+ this.actor +"</td>"
+						html += "<td>"+ this.director +"</td>"
+						html += "<td>"+ this.price +"</td>"
+						html += "</tr>"
+						$("#tid").append(html);
+					})	
+					$("#tb_list").attr({"border":"1px"})
+					
+					var html1 = '<a href="findMovie.html"><button type="button" id="add"><span>返回</span></button></a>'
+					$("#choose").append(html1)
+				}
+			},
+			error:function(){
+				alert("ajax传输错误");
+			}
+		}) 
+	})
+	function typeFind() {
+		$.ajax({
+			type:"get",
+			url:"/cinema/type/list.do",
+			dataType:"json",
+			success:function(data) {
+				if(data.code == 1) {
+					var infos = data.info;
+					$(infos).each(function(){
+						var html = '"<option value="'+ this.type +'">'+ this.type +'</option>"'
+						$("#typeSelect").append(html);
+					})
+				}
+			},
+			error:function(){
+				alert("ajax传输错误");
+			}
+		}) 
+	}
+		</script>
+		
+</body>
+</html>

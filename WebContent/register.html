@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>注册</title>
+		<link rel="stylesheet" type="text/css" href="./css/login.css">
+		<script type="text/javascript" src="./js/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/jquery.validate.min.js"></script>
+</head>
+<body>
+	<form  method="post" action="./regist.php" onsubmit="return false;">
+		<div class="regist">
+			<div class="regist_center">
+				<div class="regist_top">
+					<div class="left fl">用户注册</div>
+					
+					<div class="clear"></div>
+					
+				</div>
+				<div class="regist_main center">
+					<div class="username">用&nbsp;&nbsp;户&nbsp;&nbsp;名:&nbsp;&nbsp;<input class="shurukuang" type="text" name="name" placeholder="请输入你的用户名"/></div>
+					<div class="username">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;&nbsp;<input id="password" class="shurukuang" type="password" name="password" placeholder="请输入你的密码"/></div>
+					
+					<div class="username">确认密码:&nbsp;&nbsp;<input class="shurukuang" type="password" name="repassword" placeholder="请确认你的密码"/></div>
+					<div class="regist_submit">
+					<input class="submit" type="submit" name="submit" value="立即注册" ></div>
+				
+				</div>
+			</div>
+		</div>
+		</form>
+		<script type="text/javascript">
+			$(function(){
+				
+				// 自定义验证
+				jQuery.validator.addMethod("regex", //addMethod第1个参数:方法名称
+						function(value,element,params){//addMethod第2个参数:验证方法，参数（被验证元素的值，被验证元素，参数）
+							var exp = new RegExp(params);//实例化正则对象，参数为传入的正则表达式
+							return exp.test(value);         //测试是否匹配
+						},
+						"格式错误");//addMethod第3个参数:默认错误信息
+				
+				$("form").validate({
+					submitHandler:function(){
+						
+						$.ajax({
+							type:"post",
+							url:"/cinema/user/register.do",
+							data:$("form").serialize(),
+							dataType:"json",
+							success:function(data){
+								if(data.code == 1){
+									window.location.href = "login.html";
+								}else{
+									alert(data.info);
+								}
+							}
+						})
+						
+					},
+					rules:{
+						username:{
+							regex:"^[a-zA-Z][a-zA-Z0-9]+$"
+						},
+						password:{
+							required:true
+							
+						},
+						repassword:{
+							required:true,
+							
+							equalTo:"#password" // #password 表示id
+						}
+						
+					},
+					messages:{
+						username:{
+							regex:"用户名只能由字母数字组成"
+						},
+						password:{
+							required:"密码不能为空"
+							
+						},
+						repassword:{
+							required:"密码不能为空",
+							
+							equalTo:"两次输入密码不一致" // #password 表示id
+						}
+					}
+				})
+			})
+		</script>
+					
+	
+</body>
+</html>

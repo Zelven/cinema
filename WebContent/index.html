@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>展示所有电影</title>
+			
+	<script type="text/javascript" src="./js/jquery.min.js" ></script>
+	<script type="text/javascript" src="./js/bootstrap.min.js" ></script>
+</head>
+<body>
+<div>
+			<h3>所有电影信息</h3>
+			<a href="addMovie.html">添加电影信息</a><br/>
+			<a href="findMovie.html">电影信息查询</a><br/>
+			<table border="1">
+
+				<tr>
+					<th>序号</th>
+					<th>电影名称</th>
+					<th>电影类型</th>
+					<th>主演</th>
+					<th>导演</th>
+					<th>票价</th>
+					<th>操作</th>
+				</tr>
+				<tbody id="tid"></tbody>
+
+			</table>
+		</div>
+
+	<script type="text/javascript">
+		
+			$(function(){
+				$.ajax({
+					type:"get",
+					url:"/cinema/showAll.do",
+					dataType:"json",
+					success:function(data){
+						if(data.code == 1){
+							// 清空表格的数据
+							$("#tid").empty();
+							// 找到要遍历的数据
+							var infos = data.info;
+							// 循环遍历
+							$(infos).each(function(){
+								// 组装html格式的字符串
+								var html = "<tr>";
+								html += "	<td>" + this.id + "</td>";
+								html += "	<td>" + this.movieName + "</td>";
+								html += "	<td>" + this.movieType + "</td>";
+								html += "	<td>" + this.actor + "</td>";
+								html += "	<td>" + this.director + "</td>";
+								html += "   <td>" + this.price + "</td>";
+								html += "	<td><a href='javascript:delmovie(" + this.id + ")'>删除</a> <a href='/cinema/update.do?id=" + this.id + "'>修改</a></td>";
+								html += "</tr>";
+								// 根据html格式字符串创建dom对象，将对象添加到对应表格的最后
+								$("#tid").append($(html));
+							})
+						}else{
+							alert(data.info);
+						}
+					},
+					error:function(){
+						
+					}
+				})
+			})
+		</script>
+		<script type="text/javascript">
+		function delmovie(id){
+			$.ajax({
+				type:"get",
+				url:"/cinema/movie/delete.do?id=" + id,
+				dataType:"json",		
+				success:function(data){
+					if(data.code == 1){
+						window.location.href="index.html";
+					}else{
+						alert("没能删除成功");
+					}
+				}
+			})
+		}
+		</script>
+		
+
+</body>
+</html>
